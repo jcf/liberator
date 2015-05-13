@@ -3,8 +3,7 @@
   :url "http://clojure-liberator.github.io/liberator"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/data.json "0.2.1"]
-                 [org.clojure/data.csv "0.1.2"]
-                 [hiccup "1.0.3"]] ;; Used by code rendering default representations.
+                 [org.clojure/data.csv "0.1.2"]]
   :deploy-repositories  [["releases" :clojars]]
   :lein-release {:deploy-via :clojars}
 

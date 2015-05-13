@@ -2,9 +2,7 @@
   (:require
    [clojure.data.json :as json]
    [clojure.data.csv :as csv]
-   [liberator.util :as util]
-   [hiccup.core :refer [html]]
-   [hiccup.page :refer [html5 xhtml]]))
+   [liberator.util :as util]))
 
 ;; This namespace provides default 'out-of-the-box' web representations
 ;; for many IANA mime-types.
@@ -26,21 +24,6 @@
     (name k)
     (str k)))
 
-(defn html-table [data fields lang dictionary]
-  [:div [:table 
-         [:thead
-          [:tr 
-           (for [field fields] [:th (or (dictionary field lang)
-                                        (default-dictionary field lang))])]]
-         [:tbody (for [row data]
-                   [:tr
-                    (for [field fields]
-                      [:td (if-let [s (get row field)]
-                             (if (re-matches #"https?://.*" (str s))
-                               [:a {:href s} s]
-                               s)
-                             "")])])]]])
-
 (defmulti render-map-generic "dispatch on media type"
   (fn [data context] (get-in context [:representation :media-type])))
 
@@ -50,6 +33,9 @@
        (map (fn [[k v]] (str (dictionary k language) "=" v)))
        (interpose "\r\n")
        (apply str)))
+
+(defmethod render-map-generic "text/html" [data _]
+  (str data))
 
 (defn- render-map-csv [data sep]
   (with-out-str
@@ -79,48 +65,13 @@
 (defmethod render-map-generic "application/edn" [data context]
   (render-as-edn data))
 
-(defn- render-map-html-table
-  [data
-   {{:keys [media-type language] :as representation} :representation
-    :keys [dictionary fields] :or {dictionary default-dictionary}
-    :as context} mode]
-  (let [content
-        [:div [:table 
-
-               [:tbody (for [[key value] data]
-                         [:tr
-                          [:th (or (dictionary key language) (default-dictionary key language))]
-                          [:td value]])]]]]
-    (condp = mode
-      :html  (html content)
-      :xhtml (xhtml content))))
-
-
-(defmethod render-map-generic "text/html" [data context]
-  (render-map-html-table data context :html))
-
-(defmethod  render-map-generic "application/xhtml+xml" [data context]
-  (render-map-html-table data context :html))
-
 (defmulti render-seq-generic (fn [data context] (get-in context [:representation :media-type])))
 
-(defn render-seq-html-table
-  [data
-   {{:keys [media-type language] :as representation} :representation
-    :keys [dictionary fields] :or {dictionary default-dictionary
-                                   fields (keys (first data))}
-    :as context} mode]
-  (let [content (html-table data fields language dictionary)]
-    (condp = mode
-      :html  (html content)
-      :xhtml (xhtml content))))
+(defmethod render-seq-generic "text/html" [data _]
+  (str data))
 
-
-(defmethod render-seq-generic "text/html" [data context]
-  (render-seq-html-table data context :html))
-
-(defmethod  render-seq-generic "application/xhtml+xml" [data context]
-  (render-seq-html-table data context :html))
+(defmethod  render-seq-generic "application/xhtml+xml" [data _]
+  (str data))
 
 (defmethod render-seq-generic "application/json" [data _]
   (json/write-str data))
