@@ -22,7 +22,8 @@
   :profiles {:dev {:dependencies [[ring/ring-jetty-adapter "1.2.1" :exclusions [joda-time]]
                                   [ring-mock "0.1.2"]
                                   [ring/ring-devel "1.2.1" :exclusions [joda-time]]
-                                  [midje "1.6.0" :exclusions [org.clojure/clojure]]]}
+                                  [midje "1.6.0" :exclusions [org.clojure/clojure]]
+                                  [compojure "1.0.2" :exclusions [org.clojure/tools.macro]]]}
              :1.4 {:dependencies [[org.clojure/clojure "1.4.0"]]}
              :1.5 {:dependencies [[org.clojure/clojure "1.5.1"]]}
              :1.6 {:dependencies [[org.clojure/clojure "1.6.0"]]}}
