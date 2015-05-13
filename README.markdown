@@ -1,3 +1,18 @@
+# Why the fork?
+
+Liberator requires a version of Hiccup incompatible with a separate dependency
+in a system I'm working on. As I don't need any of the Hiccup-related
+functionality provided by Liberator (it converts sequences and maps into HTML
+tables) I've removed Hiccup and plan to deploy this fork to Clojars.
+
+**What's in this fork?**
+
+- No more examples
+- Removed dependency on Hiccup and rendering of HTML tables
+- Default to Clojure 1.6.0
+
+---
+
 # Liberator [![Build Status](https://travis-ci.org/clojure-liberator/liberator.svg?branch=master)](https://travis-ci.org/clojure-liberator/liberator)
 
 Liberator is a Clojure library for building RESTful applications.
